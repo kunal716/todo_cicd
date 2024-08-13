@@ -15,10 +15,7 @@ pipeline {
                 echo 'code build bhi ho gaya'
             }
         }
-        stage("scan image"){
-            steps{
-                echo 'image scanning ho gayi'
-            }
+        
         }
         stage("push"){
             steps{
