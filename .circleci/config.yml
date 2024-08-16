@@ -27,7 +27,7 @@ jobs:
       - run:
           name: Restart Docker container
           command: |
-            ssh -o StrictHostKeyChecking=no $CIRCLECI_USER@$SERVER_IP << 'EOF'
+            ssh -o StrictHostKeyChecking=no $CIRCLECI_USER@$SERVER_IP <<\EOF
               docker stop todo-app || true
               docker rm todo-app || true
               docker run -d -p 8000:8000 -v /circleci:/usr/src/app --name todo-app node:12.2.0-alpine \
