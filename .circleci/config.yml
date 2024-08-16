@@ -24,20 +24,25 @@ jobs:
           name: Install SCP and SSH
           command: apk add --no-cache openssh
       - run:
-          name: Verify SCP Installation
-          command: which scp
-      - run:
           name: Deploy application to server
           command: |
-            scp -o StrictHostKeyChecking=no -r ./* $CIRCLECI_USER@$SERVER_IP:/circleci/
+            # Create a directory on the server for the application files
+            ssh -o StrictHostKeyChecking=no $CIRCLECI_USER@$SERVER_IP << 'EOF'
+              mkdir -p ~/app
+            EOF
+            # Copy application files to the server
+            scp -o StrictHostKeyChecking=no -r ./dist/* $CIRCLECI_USER@$SERVER_IP:~/app/
       - run:
           name: Restart Docker container
           command: |
-            ssh -o StrictHostKeyChecking=no $CIRCLECI_USER@$SERVER_IP \
-              'docker stop todo-app || true && \
-               docker rm todo-app || true && \
-               docker run -d -p 8000:8000 -v /circleci:/usr/src/app --name todo-app node:12.2.0-alpine \
-               sh -c "cd /usr/src/app && npm install && npm start"'
+            ssh -o StrictHostKeyChecking=no $CIRCLECI_USER@$SERVER_IP << 'EOF'
+              # Stop and remove any existing container
+              docker stop todo-app || true
+              docker rm todo-app || true
+              # Build and run the Docker container
+              docker build -t todo-app ~/app
+              docker run -d -p 8000:8000 --name todo-app todo-app
+            EOF
 
 workflows:
   version: 2
