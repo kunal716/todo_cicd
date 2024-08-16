@@ -26,16 +26,12 @@ jobs:
       - run:
           name: Deploy application to server
           command: |
-            # Create a directory on the server for the application files
-            ssh -o StrictHostKeyChecking=no $CIRCLECI_USER@$SERVER_IP << 'EOF'
-              mkdir -p ~/app
-            EOF
             # Copy application files to the server
             scp -o StrictHostKeyChecking=no -r ./dist/* $CIRCLECI_USER@$SERVER_IP:~/app/
-      - run:
-          name: Restart Docker container
-          command: |
-            ssh -o StrictHostKeyChecking=no $CIRCLECI_USER@$SERVER_IP << 'EOF'
+            # Execute commands on the server
+            ssh -o StrictHostKeyChecking=no $CIRCLECI_USER@$SERVER_IP <<- EOF
+              # Create a directory on the server for the application files
+              mkdir -p ~/app
               # Stop and remove any existing container
               docker stop todo-app || true
               docker rm todo-app || true
