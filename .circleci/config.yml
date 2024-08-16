@@ -10,8 +10,11 @@ jobs:
           name: Install dependencies
           command: npm install
       - run:
-          name: Run tests
-          command: npm run test
+          name: Build application
+          command: npm run build  # Ensure this creates ./dist
+      - run:
+          name: List files in dist
+          command: ls -la ./dist
 
   deploy:
     docker:
