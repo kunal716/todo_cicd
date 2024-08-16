@@ -24,6 +24,9 @@ jobs:
           name: Install SCP and SSH
           command: apk add --no-cache openssh
       - run:
+          name: Verify SCP Installation
+          command: which scp
+      - run:
           name: Deploy application to server
           command: |
             scp -o StrictHostKeyChecking=no -r ./* $CIRCLECI_USER@$SERVER_IP:/circleci/
