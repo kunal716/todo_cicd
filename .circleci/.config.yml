@@ -1,0 +1,12 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: node:12.2.0-alpine
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm run test
+    service:
+      - docker
